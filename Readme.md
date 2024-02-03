@@ -5,7 +5,7 @@
 # Mapa do Curso:
 |Nº|Descrição|Inicio|Conclusão|
 |---|---|---|---|
-|01| Carregar Visualizações|||
+|01| Carregar Visualizações|09:18 03/02/2024||
 |02| Tabela de Dados de Pesquisa|||
 |03| Excluir linhas da planilha|||
 |04| Editar dados no Planilhas Google|||
