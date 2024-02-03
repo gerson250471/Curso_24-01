@@ -14,3 +14,9 @@ function loadAddCustomerView(){
   return loadPartialHTML_("addcustomer");
   
 }
+
+function loadEditCustomerView(){
+
+  return loadPartialHTML_("editcustomer");
+  
+}

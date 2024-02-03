@@ -59,9 +59,13 @@
        loadView({func: "loadAddCustomerView"});
       }
 
+      function loadEditCustomerView(){
+       loadView({func: "loadEditCustomerView"});
+      }
+
       document.getElementById("search-link").addEventListener("click",loadSearchView);
       document.getElementById("add-customer-link").addEventListener("click",loadAddCustomerView);
-
+      document.getElementById("home-link").addEventListener("click",loadEditCustomerView);
 
     </script>
   </body>

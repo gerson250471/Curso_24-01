@@ -5,8 +5,8 @@
 # Mapa do Curso:
 |Nº|Descrição|Inicio|Conclusão|
 |---|---|---|---|
-|01| Carregar Visualizações|09:18 03/02/2024||
-|02| Tabela de Dados de Pesquisa|||
+|01| Carregar Visualizações|09:18 03/02/2024|15:55 03/02/2024|
+|02| Tabela de Dados de Pesquisa|15:55 03/02/2024||
 |03| Excluir linhas da planilha|||
 |04| Editar dados no Planilhas Google|||
 |05| Adicionar dados|||
