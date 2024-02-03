@@ -41,26 +41,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script>
 
+      function loadView(options){
+          var id = typeof options.id === "undefined" ? "app" : options.id;
+          var cb = typeof options.callback === "undefined" ? "app" : options.callback;
+          
+          google.script.run.withSuccessHandler(function(html){
+              document.getElementById(id).innerHTML=html;
+              typeof options.params === "undefined" ? cb() : cb(options.params);
+          })[options.func]();
+      }
+      
       function loadSearchView(){
        loadView({func: "loadSearchView"});
       }
 
-      function otherFunc(){
-        document.getElementById("h1").textContent="New Search";
+     function loadAddCustomerView(){
+       loadView({func: "loadAddCustomerView"});
       }
-
-      function loadView(options){
-        var id = typeof options.id === "undefined" ? "app" :options.id;
-        var cb = typeof options.callback === "undefined" ? function(){} :options.callback;
-        google.script.run.withSuccessHandler(function(html){
-          document.getElementById(id).innerHTML = html;
-          cb();
-        })[options.func]();
-      }
-
-     
 
       document.getElementById("search-link").addEventListener("click",loadSearchView);
+      document.getElementById("add-customer-link").addEventListener("click",loadAddCustomerView);
 
 
     </script>
