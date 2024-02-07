@@ -1,7 +1,7 @@
 <h3>Search</h3>
 
   <div class="form-group">
-    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="search ...">
+    <input type="text" class="form-control" id="searchInput" placeholder="search ...">
   </div>
 
   <table class="table table-hover">
@@ -14,13 +14,17 @@
       <th scope="col"></th>
     </tr>
   </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td><button type="button" class="btn btn-outline-dark">Edit</button></td>
-      <td><button type="button" class="btn btn-outline-dark">Delete</button></td>
-    </tr>
+  <tbody id="searchResults">
+    
   </tbody>
 </table>
+
+<template id="rowTemplate">
+  <tr>
+    <th class="custID" scope="row"></th>
+    <td class="firstName"></td>
+    <td class="lastName"></td>
+    <td><button type="button" class="btn btn-outline-dark">Edit</button></td>
+    <td><button type="button" class="btn btn-outline-dark">Delete</button></td>
+  </tr>
+</template>
