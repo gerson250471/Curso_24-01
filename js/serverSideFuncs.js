@@ -1,6 +1,14 @@
 function getDataForSearch() {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const ws = ss.getSheetByName("Customers");
-    return ws.getRange(2,1,ws.getLastRow()-1,3).getValues();
-  }
-  
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName("Customers");
+  return ws.getRange(2,1,ws.getLastRow()-1,3).getValues();
+}
+
+function deleteByID(id){
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName("Customers");
+  const custID = ws.getRange(2,1,ws.getLastRow()-1,3).getValues().map(r => r[0].toString().toLowerCase());
+  const posIndex = custID.indexOf(id.toString().toLowerCase());
+  const rowNumber = posIndex === -1 ? 0 : posIndex+2;
+  ws.deleteRow(rowNumber);
+}
