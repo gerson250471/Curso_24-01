@@ -86,13 +86,13 @@
           var custIDColumn = tr.querySelector(".custID");
           var firstNameColumn = tr.querySelector(".firstName");
           var lastNameColumn = tr.querySelector(".lastName");
-
           var deleteButton = tr.querySelector(".delete-button");
-          
+          var editButton = tr.querySelector(".edit-button");
 
 
           custIDColumn.textContent = r[0];
           deleteButton.dataset.customerId = r[0];
+          editButton.dataset.customerId = r[0];
           firstNameColumn.textContent = r[1];
           lastNameColumn.textContent = r[2];
           searchResultsBox.appendChild(tr);
@@ -118,8 +118,38 @@
         var custID = e.target.dataset.customerId;
         google.script.run.withSuccessHandler(function(){
           e.target.closest(".result-box").remove();
+          var ids = data.map(function(r){ return r[0].toString().toLowerCase()});
+          var index = ids.indexOf(custID.toString().toLowerCase());
+          data.splice(index,1);
         }).deleteByID(custID);
         
+      }
+
+      function afterEditViewLoads(params){
+        //{custID:e.target.dataset.customerId}
+        document.getElementById("customer-id").value = params.custID;
+        google.script.run.withSuccessHandler(function(customerInfo){
+          document.getElementById("first-name").value = customerInfo.firstName;
+          document.getElementById("last-name").value = customerInfo.lastName;
+          document.getElementById("phone-number").value = customerInfo.phone;
+        }).getCustomerById(params.custID);
+      }
+
+      function editCustomer(){
+        var customerInfo = {};
+        customerInfo.firstName = document.getElementById("first-name").value;
+        customerInfo.lastName = document.getElementById("last-name").value;
+        customerInfo.phone = document.getElementById("phone-number").value;
+        
+        var id = document.getElementById("customer-id").value;
+        
+        google.script.run.withSuccessHandler(function(res){
+          document.getElementById("save-success-message").classList.remove("invisible");
+          setTimeout(function(){
+            document.getElementById("save-success-message").classList.add("invisible");
+          },2000)
+        }).editCustomerById(id,customerInfo);
+
       }
       
       function loadSearchView(){
@@ -151,10 +181,14 @@
         if(e.target.matches(".before-delete-button")){
           displayConfirmationDelete(e);
         }
-
+        if(e.target.matches(".edit-button")){
+          loadView({func: "loadEditCustomerView", callback: afterEditViewLoads, params: {custID:e.target.dataset.customerId}});
+        }
+        if(e.target.matches("#save-changes")){
+          editCustomer();
+        }
 
       }
-
       document.getElementById("app").addEventListener("input",inputEventHandler);
       document.getElementById("app").addEventListener("click",clickEventHandler);
 
