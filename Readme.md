@@ -9,5 +9,5 @@
 |02| Tabela de Dados de Pesquisa|15:55 03/02/2024|14:16 07/02/2024|
 |03| Excluir linhas da planilha|14:16 07/02/2024|15:28 12/02/2024|
 |04| Editar dados no Planilhas Google|15:28 12/02/2024|14:00 14/02/2024|
-|05| Adicionar dados|14:00 14/02/2024||
-|06| Projete uma melhor experiência do usuário|||
+|05| Adicionar dados|14:00 14/02/2024|20:41 16/02/2024|
+|06| Projete uma melhor experiência do usuário|20:41 16/02/2024||

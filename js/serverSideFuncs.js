@@ -36,3 +36,24 @@ function editCustomerById(id,customerInfo){
   ]]);
   return true;
 }
+
+function addCustomer(customerInfo){
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName("Customers");
+  const uniqueIDS = ws.getRange(2,1,ws.getLastRow()-1,1).getValues();
+  var maxNum = 0;
+  uniqueIDS.forEach(r => {
+    maxNum = r[0] > maxNum ? r[0] : maxNum
+  });
+  var newID = maxNum+1;
+
+  Logger.log("Entrei")
+
+  ws.appendRow([
+    newID,
+    customerInfo.firstName,
+    customerInfo.lastName,
+    customerInfo.phone
+  ]);
+
+}

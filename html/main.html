@@ -16,20 +16,18 @@
 
   </head>
   <body>
-
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <div class="nav-link active" id="home-link">Home</div>
-      </li>
-      <li class="nav-item">
-        <div class="nav-link" id="search-link">Search</div>
-      </li>
-      <li class="nav-item">
-        <div class="nav-link" id="add-customer-link">Add Customer</div>
-      </li>
-    </ul>
-   
     <div class="container">
+      <nav id="navigation">
+        <ul class="nav nav-tabs main-nav">
+          <li class="nav-item">
+            <div class="nav-link active" id="search-link">Search</div>
+          </li>
+          <li class="nav-item">
+            <div class="nav-link" id="add-customer-link">Add Customer</div>
+          </li>
+        </ul>
+      </nav>
+
       <div id="app"></div>
       <!-- Content here -->
     </div>
@@ -149,6 +147,25 @@
             document.getElementById("save-success-message").classList.add("invisible");
           },2000)
         }).editCustomerById(id,customerInfo);
+      }
+
+      function addCustomer(){
+
+        var customerInfo = {};
+        customerInfo.firstName = document.getElementById("first-name").value;
+        customerInfo.lastName = document.getElementById("last-name").value;
+        customerInfo.phone = document.getElementById("phone-number").value;
+
+        google.script.run.withSuccessHandler(function(){
+          document.getElementById("first-name").value="";
+          document.getElementById("last-name").value="";
+          document.getElementById("phone-number").value="";
+
+          document.getElementById("save-success-message").classList.remove("invisible");
+          setTimeout(function(){
+            document.getElementById("save-success-message").classList.add("invisible");
+          },2000)
+        }).addCustomer(customerInfo);
 
       }
       
@@ -160,13 +177,21 @@
        loadView({func: "loadAddCustomerView"});
       }
 
-      function loadEditCustomerView(){
-       loadView({func: "loadEditCustomerView"});
+      function loadEditCustomerView(e){
+       loadView({func: "loadEditCustomerView", callback: afterEditViewLoads, params: {custID:e.target.dataset.customerId}});
+      }
+
+      function activeTabChange(e){
+        var navlinks = document.querySelectorAll(".main-nav .nav-link");
+
+        navlinks.forEach(function(linkEl){
+          linkEl.classList.remove("active");
+        });
+        e.target.classList.add("active");
       }
 
       document.getElementById("search-link").addEventListener("click",loadSearchView);
       document.getElementById("add-customer-link").addEventListener("click",loadAddCustomerView);
-      document.getElementById("home-link").addEventListener("click",loadEditCustomerView);
 
       function inputEventHandler(e){
         if(e.target.matches("#searchInput")){
@@ -182,15 +207,30 @@
           displayConfirmationDelete(e);
         }
         if(e.target.matches(".edit-button")){
-          loadView({func: "loadEditCustomerView", callback: afterEditViewLoads, params: {custID:e.target.dataset.customerId}});
+          loadEditCustomerView(e);
         }
         if(e.target.matches("#save-changes")){
           editCustomer();
         }
+        if(e.target.matches("#cancel-changes")){
+          loadSearchView();
+        }
+        if(e.target.matches("#add-customer-button")){
+          addCustomer();
+        }
 
       }
+
+      function navClickEventHandler(e){
+          if(e.target.matches(".nav-link")){
+          activeTabChange(e);
+        }
+      }
+
       document.getElementById("app").addEventListener("input",inputEventHandler);
       document.getElementById("app").addEventListener("click",clickEventHandler);
+      document.getElementById("navigation").addEventListener("click",navClickEventHandler);
+      document.addEventListener("DOMContentLoaded",loadSearchView);
 
     </script>
   </body>
