@@ -9,18 +9,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <style>
-      .nav-link{
+      .nav-link {
         cursor:pointer;
       }
+
+      #loading {
+        position:fixed;
+        top:0;
+        left:0;
+        z-index:10000;
+        width:100vw;
+        head:100vh;
+        background-color: rgba(250,250,250,0.9);
+      }
+
     </style>
 
   </head>
   <body>
     <div class="container">
-      <nav id="navigation">
+      <nav id="navigation" class="mb-3">
         <ul class="nav nav-tabs main-nav">
           <li class="nav-item">
-            <div class="nav-link active" id="search-link">Search</div>
+            <div class="nav-link active" id="search-link">Find Customer</div>
           </li>
           <li class="nav-item">
             <div class="nav-link" id="add-customer-link">Add Customer</div>
@@ -29,8 +40,14 @@
       </nav>
 
       <div id="app"></div>
-      <!-- Content here -->
-    </div>
+        <!-- Content here -->
+      </div>
+
+      <div id="loading" class="d-flex justify-content-center align-items-center invisible">
+        <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -42,17 +59,20 @@
 
       function loadView(options){
           var id = typeof options.id === "undefined" ? "app" : options.id;
-          var cb = typeof options.callback === "undefined" ? "app" : options.callback;
-          
+          var cb = typeof options.callback === "undefined" ? function(){} : options.callback;
+          loadingStart();
           google.script.run.withSuccessHandler(function(html){
               document.getElementById(id).innerHTML=html;
+               loadingEnd();
               typeof options.params === "undefined" ? cb() : cb(options.params);
           })[options.func]();
       }
 
       function setDataForSearch(){
+        loadingStart();
         google.script.run.withSuccessHandler(function(dataReturned){
           data = dataReturned.slice();
+          loadingEnd();
         }).getDataForSearch();
       }
 
@@ -72,6 +92,10 @@
           });
           
         });
+
+        var recordCount = searchInput === "" ? "" : "Record Count: " + resultsArray.length;
+        document.getElementById("searchCounter").textContent = recordCount;
+
         var searchResultsBox = document.getElementById("searchResults");
         var templateBox = document.getElementById("rowTemplate");
         var template = templateBox.content;
@@ -114,26 +138,31 @@
       function deleteCustomer(e){
 
         var custID = e.target.dataset.customerId;
+        loadingStart();
         google.script.run.withSuccessHandler(function(){
           e.target.closest(".result-box").remove();
           var ids = data.map(function(r){ return r[0].toString().toLowerCase()});
           var index = ids.indexOf(custID.toString().toLowerCase());
           data.splice(index,1);
+          loadingEnd();
         }).deleteByID(custID);
         
       }
 
       function afterEditViewLoads(params){
-        //{custID:e.target.dataset.customerId}
+        //Loading
+        loadingStart();
         document.getElementById("customer-id").value = params.custID;
         google.script.run.withSuccessHandler(function(customerInfo){
           document.getElementById("first-name").value = customerInfo.firstName;
           document.getElementById("last-name").value = customerInfo.lastName;
           document.getElementById("phone-number").value = customerInfo.phone;
+          loadingEnd();
         }).getCustomerById(params.custID);
       }
 
       function editCustomer(){
+        loadingStart();
         var customerInfo = {};
         customerInfo.firstName = document.getElementById("first-name").value;
         customerInfo.lastName = document.getElementById("last-name").value;
@@ -142,6 +171,7 @@
         var id = document.getElementById("customer-id").value;
         
         google.script.run.withSuccessHandler(function(res){
+          loadingEnd();
           document.getElementById("save-success-message").classList.remove("invisible");
           setTimeout(function(){
             document.getElementById("save-success-message").classList.add("invisible");
@@ -150,7 +180,7 @@
       }
 
       function addCustomer(){
-
+        loadingStart();
         var customerInfo = {};
         customerInfo.firstName = document.getElementById("first-name").value;
         customerInfo.lastName = document.getElementById("last-name").value;
@@ -162,6 +192,7 @@
           document.getElementById("phone-number").value="";
 
           document.getElementById("save-success-message").classList.remove("invisible");
+          loadingEnd();
           setTimeout(function(){
             document.getElementById("save-success-message").classList.add("invisible");
           },2000)
@@ -188,6 +219,14 @@
           linkEl.classList.remove("active");
         });
         e.target.classList.add("active");
+      }
+
+      function loadingStart(){
+        document.getElementById("loading").classList.remove("invisible");
+      }
+
+      function loadingEnd(){
+        document.getElementById("loading").classList.add("invisible");
       }
 
       document.getElementById("search-link").addEventListener("click",loadSearchView);
